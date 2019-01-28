@@ -1,0 +1,70 @@
+#!/usr/bin/python
+ # -*- coding: utf-8 -*-
+
+#This program prints the available playlists of the specified iTunes library and compares them
+
+from libpytunes import Library
+import unidecode
+
+l = Library('/Volumes/Transcend/Musik/Musik Hoeren/iTunes/iTunes Library.xml')
+
+playlists=l.getPlaylistNames()
+plcount = 0
+
+for pl in playlists:
+	print plcount, "  ",pl
+	plcount += 1
+
+print "Please enter the first playlist"
+print
+plA = input()
+print "Please enter the second playlist"
+print
+plB = input()
+
+playlistA = [song.name+", "+str(song.artist) for song in l.getPlaylist(playlists[plA]).tracks]
+#print playlistA
+
+playlistB = [song.name+", "+str(song.artist) for song in l.getPlaylist(playlists[plB]).tracks]
+#print playlistB
+
+match_count_B = 0
+plBuniques = []
+
+for song in playlistB:
+	match = False
+	for track in playlistA:
+		if song == track:
+			match_count_B += 1
+			match = True
+			break
+	if match == False:
+		plBuniques.append(song)
+#print plBuniques
+
+match_count_A = 0
+plAuniques = []
+
+for song in playlistA:
+	match = False
+	for track in playlistB:
+		if song == track:
+			match_count_A += 1
+			match = True
+			break
+	if match == False:
+		plAuniques.append(song)
+#print plAuniques
+
+print
+print "The following tracks were only found in Playlist", plA,":"
+print
+for song in plAuniques:
+	print song
+
+print
+print "The following tracks were only found in Playlist", plB,":"
+print
+for song in plBuniques:
+	print song
+
